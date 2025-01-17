@@ -20,6 +20,11 @@ jobs:
                   tar -xzf rapidjson.tar.gz --strip-components=1 -C rapidjson-latest
                   tar -czf rapidjson.tar.gz rapidjson-latest
 
+            - name: Delete previous release
+              run: |
+                  gh release delete rapidjson-latest -y
+                  gh release delete-tag rapidjson-latest -y
+
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1
