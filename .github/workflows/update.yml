@@ -21,11 +21,11 @@ jobs:
                   tar -czf rapidjson.tar.gz rapidjson-latest
 
             - name: Delete previous release
-              env:
-                  GH_TOKEN: ${{ github.token }}
               run: |
-                  gh release delete rapidjson-latest -y
-                  gh release delete-tag rapidjson-latest -y
+                  gh release delete rapidjson-latest --yes || true
+                  gh release delete-asset rapidjson-latest rapidjson.tar.gz --yes || true
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Create Release
               id: create_release
