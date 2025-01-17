@@ -11,7 +11,10 @@ jobs:
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
+
+            - name: Install GitHub CLI
+              run: sudo apt-get install -y gh
 
             - name: Download RapidJSON source code
               run: |
@@ -20,30 +23,14 @@ jobs:
                   tar -xzf rapidjson.tar.gz --strip-components=1 -C rapidjson-latest
                   tar -czf rapidjson.tar.gz rapidjson-latest
 
-            - name: Delete previous release
+            - name: Delete previous release (if exists)
               run: |
                   gh release delete rapidjson-latest --yes || true
-                  gh release delete-asset rapidjson-latest rapidjson.tar.gz --yes || true
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Create Release
-              id: create_release
-              uses: actions/create-release@v1
+              run: |
+                  gh release create rapidjson-latest rapidjson.tar.gz --title "RapidJSON Latest" --notes "Automated monthly update"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  tag_name: "rapidjson-latest"
-                  release_name: "RapidJSON Latest"
-                  draft: false
-                  prerelease: false
-
-            - name: Upload Release Asset
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./rapidjson.tar.gz
-                  asset_name: rapidjson.tar.gz
-                  asset_content_type: application/gzip
