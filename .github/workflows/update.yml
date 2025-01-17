@@ -2,7 +2,7 @@ name: Update RapidJSON
 
 on:
     schedule:
-        - cron: "0 0 * * 0" # Runs every week
+        - cron: "0 0 1 * *" # Runs every month
     workflow_dispatch:
 
 jobs:
